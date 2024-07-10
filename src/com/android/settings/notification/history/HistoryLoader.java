@@ -66,7 +66,9 @@ public class HistoryLoader {
                         new ArrayList<>(historicalNotifications.values());
                 Collections.sort(packages,
                         (o1, o2) -> -1 * Long.compare(o1.getMostRecent(), o2.getMostRecent()));
-                for (NotificationHistoryPackage nhp : packages) {
+                //for (NotificationHistoryPackage nhp : packages) {
+                for (int i = 0; i < packages.size(); i++) {    
+                    NotificationHistoryPackage nhp = packages.get(i);
                     ApplicationInfo info;
                     try {
                         info = mPm.getApplicationInfoAsUser(
@@ -77,13 +79,22 @@ public class HistoryLoader {
                                         | PackageManager.MATCH_DIRECT_BOOT_AWARE,
                                 UserHandle.getUserId(nhp.uid));
                         if (info != null) {
+                            boolean appStatus = info.enabled;
+                            if (! appStatus){
+                                packages.remove(i);
+                                i--;
+                                continue;
+                            }
                             nhp.label = String.valueOf(mPm.getApplicationLabel(info));
                             nhp.icon = mPm.getUserBadgedIcon(mPm.getApplicationIcon(info),
                                     UserHandle.of(UserHandle.getUserId(nhp.uid)));
                         }
                     } catch (PackageManager.NameNotFoundException e) {
+                        packages.remove(i);
+                        i--;
+                        continue;
                         // app is gone, just show package name and generic icon
-                        nhp.icon = mPm.getDefaultActivityIcon();
+                        //nhp.icon = mPm.getDefaultActivityIcon();
                     }
                 }
                 ThreadUtils.postOnMainThread(() -> listener.onHistoryLoaded(packages));
