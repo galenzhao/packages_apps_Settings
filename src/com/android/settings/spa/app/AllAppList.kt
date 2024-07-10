@@ -96,8 +96,9 @@ class AllAppListModel(
         val hasDisabled = recordList.any(isDisabled)
         val hasInstant = recordList.any(isInstant)
         if (!hasDisabled && !hasInstant) return emptyList()
-        val options = mutableListOf(SpinnerItem.All, SpinnerItem.Enabled)
-        if (hasDisabled) options += SpinnerItem.Disabled
+        //val options = mutableListOf(SpinnerItem.All, SpinnerItem.Enabled)
+        val options = mutableListOf(SpinnerItem.Enabled)
+        //if (hasDisabled) options += SpinnerItem.Disabled
         if (hasInstant) options += SpinnerItem.Instant
         return options.map {
             SpinnerOption(
@@ -119,7 +120,7 @@ class AllAppListModel(
             SpinnerItem.Enabled -> ({ it.app.enabled && !it.app.isInstantApp })
             SpinnerItem.Disabled -> isDisabled
             SpinnerItem.Instant -> isInstant
-            else -> ({ true })
+            else -> ({ true && it.app.enabled && !it.app.isInstantApp })
         }
     )
 

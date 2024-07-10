@@ -74,10 +74,10 @@ class AppNotificationsListModel(
     ) = recordListFlow.map { recordList ->
         recordList.asyncFilter { record ->
             when (option.toSpinnerItem()) {
-                SpinnerItem.MostRecent -> record.sentState != null
-                SpinnerItem.MostFrequent -> record.sentState != null
-                SpinnerItem.TurnedOff -> !record.controller.getEnabled()
-                else -> true
+                SpinnerItem.MostRecent -> record.sentState != null && record.app.enabled && !record.app.isInstantApp
+                SpinnerItem.MostFrequent -> record.sentState != null && record.app.enabled && !record.app.isInstantApp
+                SpinnerItem.TurnedOff -> !record.controller.getEnabled() && record.app.enabled && !record.app.isInstantApp
+                else -> true && record.app.enabled && !record.app.isInstantApp
             }
         }
     }

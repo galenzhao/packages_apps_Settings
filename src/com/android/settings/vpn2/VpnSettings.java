@@ -357,7 +357,24 @@ public class VpnSettings extends RestrictedDashboardFragment implements
                     p.setState(AppPreference.STATE_DISCONNECTED);
                 }
                 p.setAlwaysOn(alwaysOnAppVpnInfos.contains(app));
-                updates.add(p);
+                final Activity activity = mSettings.getActivity();
+                if (activity == null) {
+                    continue;
+                }
+                final Context context = activity.getApplicationContext();
+                
+                PackageManager pm = context.getPackageManager();
+                try{
+                    ApplicationInfo appInfo =
+                            pm.getApplicationInfo(
+                                    app.packageName, /* flags= */ 0);
+                    int userId = UserHandle.getUserId(appInfo.uid);
+                    if(appInfo.enabled){
+                        updates.add(p);
+                    }
+                } catch (PackageManager.NameNotFoundException nnfe) {
+                    Log.w(LOG_TAG, "VPN provider does not exist: " + app.packageName, nnfe);
+                }
             }
 
             // Trim out deleted VPN preferences
@@ -641,7 +658,9 @@ public class VpnSettings extends RestrictedDashboardFragment implements
                         pm.getApplicationInfo(
                                 featureProvider.getAdvancedVpnPackageName(), /* flags= */ 0);
                 int userId = UserHandle.getUserId(appInfo.uid);
-                result.add(new AppVpnInfo(userId, featureProvider.getAdvancedVpnPackageName()));
+                if(appInfo.enabled){
+                    result.add(new AppVpnInfo(userId, featureProvider.getAdvancedVpnPackageName()));
+                }
             } catch (PackageManager.NameNotFoundException e) {
                 Log.e(LOG_TAG, "Advanced VPN package name not found.", e);
             }
