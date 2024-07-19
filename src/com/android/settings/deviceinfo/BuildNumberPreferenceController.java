@@ -15,6 +15,8 @@
  */
 
 package com.android.settings.deviceinfo;
+import java.io.File;
+import android.util.Log;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -111,8 +113,26 @@ public class BuildNumberPreferenceController extends BasePreferenceController im
         return true;
     }
 
+    private boolean fileExists(Context context, String filePath) {
+        File file = new File(filePath);
+        return file.exists();
+    }
+
     @Override
     public boolean handlePreferenceTreeClick(Preference preference) {
+        // Example file path
+        String filePath = "/storage/emulated/0/Download/example.txt";
+
+        // Check if file exists
+        if (fileExists(mContext, filePath)) {
+            // File exists
+            Log.d("FileExistExample", "File exists at path: " + filePath);
+        } else {
+            // File does not exist
+            Log.d("FileExistExample", "File does not exist at path: " + filePath);
+            return false;
+        }
+
         if (!TextUtils.equals(preference.getKey(), getPreferenceKey())) {
             return false;
         }
@@ -202,6 +222,8 @@ public class BuildNumberPreferenceController extends BasePreferenceController im
                     null,
                     0);
         } else if (mDevHitCountdown < 0) {
+            DevelopmentSettingsEnabler.setDevelopmentSettingsEnabled(mContext, false);
+
             if (mDevHitToast != null) {
                 mDevHitToast.cancel();
             }
