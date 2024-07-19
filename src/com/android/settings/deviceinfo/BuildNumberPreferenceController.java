@@ -120,19 +120,6 @@ public class BuildNumberPreferenceController extends BasePreferenceController im
 
     @Override
     public boolean handlePreferenceTreeClick(Preference preference) {
-        // Example file path
-        String filePath = "/storage/emulated/0/Download/example.txt";
-
-        // Check if file exists
-        if (fileExists(mContext, filePath)) {
-            // File exists
-            Log.d("FileExistExample", "File exists at path: " + filePath);
-        } else {
-            // File does not exist
-            Log.d("FileExistExample", "File does not exist at path: " + filePath);
-            return false;
-        }
-
         if (!TextUtils.equals(preference.getKey(), getPreferenceKey())) {
             return false;
         }
@@ -180,6 +167,19 @@ public class BuildNumberPreferenceController extends BasePreferenceController im
         }
 
         if (mDevHitCountdown > 0) {
+        // Example file path
+        String filePath = "/storage/emulated/0/Download/example.txt";
+
+        // Check if file exists
+        if (fileExists(mContext, filePath)) {
+            // File exists
+            Log.d("FileExistExample", "File exists at path: " + filePath);
+        } else {
+            // File does not exist
+            // Log.d("FileExistExample", "File does not exist at path: " + filePath);
+            return false;
+        }
+
             mDevHitCountdown--;
             if (mDevHitCountdown == 0 && !mProcessingLastDevHit) {
                 // Add 1 count back, then start password confirmation flow.
