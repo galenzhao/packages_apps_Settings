@@ -110,12 +110,12 @@ class BatteryOptimizationModeAppListModel(
                 .getAppOptimizationMode(/* refreshList */ false);
             when (OptimizationModeSpinnerItem.entries.getOrNull(option)) {
                 OptimizationModeSpinnerItem.Restricted ->
-                    appOptimizationMode == BatteryOptimizeUtils.MODE_RESTRICTED
+                    (appOptimizationMode == BatteryOptimizeUtils.MODE_RESTRICTED && it.app.enabled)
                 OptimizationModeSpinnerItem.Optimized ->
-                    appOptimizationMode == BatteryOptimizeUtils.MODE_OPTIMIZED
+                    (appOptimizationMode == BatteryOptimizeUtils.MODE_OPTIMIZED && it.app.enabled)
                 OptimizationModeSpinnerItem.Unrestricted ->
-                    appOptimizationMode == BatteryOptimizeUtils.MODE_UNRESTRICTED
-                else -> (true)
+                    (appOptimizationMode == BatteryOptimizeUtils.MODE_UNRESTRICTED && it.app.enabled)
+                else -> (true && it.app.enabled)
             }
         }
     }
